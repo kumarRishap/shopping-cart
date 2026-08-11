@@ -1,0 +1,32 @@
+services:
+
+  mysql:
+    image: mysql:8.4
+    container_name: shopping-cart-mysql
+    environment:
+      MYSQL_DATABASE: shopping_cart_db
+      MYSQL_USER: shopping_cart
+      MYSQL_PASSWORD: shopping_cart
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  shopping-cart:
+    build: .
+    container_name: shopping-cart-app
+
+    depends_on:
+      - mysql
+
+    ports:
+      - "9193:9193"
+
+    environment:
+      DB_URL: jdbc:mysql://host.docker.internal:3306/shopping_cart_db
+      DB_USERNAME: shopping_cart
+      DB_PASSWORD: shopping_cart
+
+volumes:
+  mysql-data:
